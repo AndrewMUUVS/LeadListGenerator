@@ -2,6 +2,7 @@ from ListModifiers import create_email
 import streamlit as st
 import pandas as pd
 import openai
+import time
 
 def create_email(df, openai_key):
     openai.api_key = openai_key
