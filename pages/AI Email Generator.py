@@ -65,7 +65,7 @@ def create_email(df, openai_key):
     return df
 
 # Heading
-st.title('Email Generator')
+st.title('AI Email Generator')
 
 # File Uploader for Merged File
 st.write("")
