@@ -1,4 +1,3 @@
-from ListModifiers import create_email
 import streamlit as st
 import pandas as pd
 import openai
