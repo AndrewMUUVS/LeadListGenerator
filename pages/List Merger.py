@@ -218,7 +218,7 @@ def merge(zoominfo, cognism, phantombuster, campaign):
     return merged
 
 # Heading
-st.title('Lead List Generator')
+st.title('List Merger')
 
 # File Uploader for Zoominfo
 st.write("")

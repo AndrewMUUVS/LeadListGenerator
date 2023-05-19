@@ -37,9 +37,6 @@ def create_email(df, openai_key):
     
             # Waiting if exceeded request limits
             count = count + 1
-            if count == 5:
-                break
-
             if count == 60:
                 count = 0
                 time.sleep(70)
