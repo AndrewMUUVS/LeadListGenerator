@@ -231,7 +231,7 @@ zo = pd.DataFrame()
 if zoominfo is not None:
     zo = pd.read_csv(zoominfo)
 
-    if st.button('Show File',key="Zoominfo Button"):
+    if st.button('Show Content',key="Zoominfo Button"):
         st.write(zo)
 
 # File Uploader for Cognism
@@ -245,7 +245,7 @@ co = pd.DataFrame
 if cognism is not None:
     co = pd.read_csv(cognism)
 
-    if st.button('Show File', key="Cognism Button"):
+    if st.button('Show Content', key="Cognism Button"):
         st.write(co)
 
 # File Uploader for Phantombuster
@@ -259,7 +259,7 @@ ph = pd.DataFrame()
 if phantombuster is not None:
     ph = pd.read_csv(phantombuster)
 
-    if st.button('Show File', key="Phantombuster Button"):
+    if st.button('Show Content', key="Phantombuster Button"):
         st.write(ph)
 
 
@@ -275,20 +275,20 @@ if campaign != "campaign_id":
 # Process and Dowload
 st.write("")
 st.write("**📥 PROCESS AND DOWNLOAD LEAD LIST**")
-process, download = st.columns(2)
+process, download, show = st.columns(3)
 
 
 # Process
+merged = pd.DataFrame()
 with process: 
-    merged = pd.DataFrame()
-    
-    if st.button('Create Lead List'):
-        if not zo.empty and not co.empty and not ph.empty:
-            merged = merge(zo, co, ph, campaign)
-            st.success('Merge was succesfull')
-        else:
-            st.error('You have to insert the files!')
+    proc = st.button('Create Lead List')
 
+if proc:
+    if not zo.empty and not co.empty and not ph.empty:
+        merged = merge(zo, co, ph, campaign)
+        st.success('Merge was succesfull')
+    else:
+        st.error('You have to insert the files!')
 
 # Download
 @st.cache_data
@@ -296,7 +296,7 @@ def convert_df(df):
     return df.to_csv().encode('utf-8')
 
 with download:  
-    
-    csv = convert_df(merged)
+    if not merged.empty:
+        csv = convert_df(merged)
+        st.download_button(label="Download the Lead List",  data=csv, file_name='LeadList.csv', mime='text/csv')
 
-    st.download_button(label="Download the Lead List",  data=csv, file_name='LeadList.csv', mime='text/csv')

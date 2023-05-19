@@ -37,11 +37,13 @@ def create_email(df, openai_key):
             # print the generated text and save it
             skills = response.choices[0].text
             skills = skills.strip()
-            print()
-            print("Extracted skills: ", skills)
+            st.write("Extracted skills: ", skills)
     
             # Waiting if exceeded request limits
             count = count + 1
+            if count == 5:
+                break
+
             if count == 60:
                 count = 0
                 time.sleep(70)
@@ -52,7 +54,7 @@ def create_email(df, openai_key):
         
             # Insert the text and print it
             df.loc[idx, 'MESSAGE'] = template
-            print(idx, df.loc[idx, 'MESSAGE'])
+            st.write(idx, df.loc[idx, 'MESSAGE'])
 
 
         elif not pd.isna(row['FIRSTNAME']) and not pd.isna(row['CITY']) and not pd.isna(row['TITLE']):
@@ -80,16 +82,13 @@ me = pd.DataFrame()
 if merged is not None:
     me = pd.read_csv(merged)
 
-    if st.button('Show File',key="Merged Button"):
+    if st.button('Show Content',key="Merged Button"):
         st.write(me)
 
 # Type in the Capaign Id
 st.write("")
 st.write("**🔑 OPENAI KEY**")
 key = st.text_input('Enter the openai key')
-
-if key != "":
-    st.write('The key ID is', key)
 
 # Process and Dowload
 st.write("")
@@ -98,16 +97,17 @@ process, download = st.columns(2)
 
 # Process
 with process: 
-    email = pd.DataFrame()
+    proc = st.button('Create Lead List')
     
-    if st.button('Create Lead List'):
-        if not me.empty:
-            email = create_email(me, key)
-            create_email()
-            st.success('Email creation succesfull')
-        else:
-            st.error('You have to insert the file!')
-
+    
+email = pd.DataFrame()
+    
+if proc:
+    if not me.empty and not key == "":
+        email = create_email(me, key)
+        st.success('Email creation succesfull')
+    else:
+        st.error('You have to insert the file and the key first!')
 
 # Download
 @st.cache_data
@@ -116,6 +116,6 @@ def convert_df(df):
 
 with download:  
     
-    csv = convert_df(email)
-
-    st.download_button(label="Download the Lead List",  data=csv, file_name='LeadList.csv', mime='text/csv')
+    if not email.empty:
+        csv = convert_df(email)
+        downl = st.download_button(label="Download Lead List",  data=csv, file_name='LeadList.csv', mime='text/csv')
